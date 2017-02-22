@@ -831,22 +831,22 @@ Execution Run&	Old Map Date & New Map Date & Dynamic Map Update Protocol Tile Up
 
 \section{Evaluation Period} \label{timedifference}
 We have considered different time differences ranging from 2+ years to 1 day to understand for different degrees of map changes between the different database versions. Thus, evaluating our Dynamic Map Update Protocol in a much broader scale to understand the effects between various time differences of the map data. We have considered following different time differences for evaluation of our approach \begin{enumerate}
-\item 2 Years
-\item 1 Year
-\item 45 Days
-\item 30 Days
-\item 15 Days
-\item 1 Day
+\item 2 Years (01-01-2014)
+\item 1 Year (01-01-2015)
+\item 45 Days (16-07-2016)
+\item 30 Days (01-08-2016)
+\item 15 Days (16-08-2016)
+\item 1 Day (30-08-2016)
 \end{enumerate}
-These are the differences between the server and client's version of the map data of the same region. The server is always presumed to have the latest information, the most recent map version. 
+These are the differences between the server and client's version of the map data of the same region. The server is always presumed to have the latest information, the most recent map version which is the map data on date 31-08-2016. 
 \\
 
-To show the significance of our findings in 1 day differences where the changes were minimum, we evaluated our scenarios with 1-day differences over a 30 day period. For this, we considered the month of August 2016. We evaluated our approach between 01-Aug-2016 vs 02-Aug-2016, and then 02-Aug-2016 vs 03-Aug-2016 and so on. In addition to that, we used the same set of map data of the month of August 2016, to create 16 such periods with 15-days difference. 
+OpenStreetMap (Section \ref{osm}) is a volunteered project. The contribution to the map data comes from volunteers who update the map. The amount of changes on a particular day depends on the changes reported by the volunteers. Since our evaluation only considered fixed dates, we wanted to evaluate our Dynamic Map Update Protocol over multiple similar time differences. Additionally, to show the statistical significance of our findings in 1 day differences where the changes were minimum, we evaluated our scenarios with 1-day differences over a 30 day period. For this, we considered the month of August 2016. We evaluated our approach between 01-Aug-2016 vs 02-Aug-2016, and then 02-Aug-2016 vs 03-Aug-2016 and so on. In addition to that, we used the same set of map data of the month of August 2016, to create 16 such periods with 15-days difference. 
 \section{Geographic Location}
 As described earlier in Section \ref{whyosm} no high-definition map format is yet available with a long history of versions to evaluate our approach. Therefore, we are using OpenStreetMap (see Section \ref{osm}) to test our approach. To keep our evaluation comparable to that of a high-definition map with frequent changes, we researched for areas in the world with considerably higher map change activity. A study by \citet{neis2011street} showed that Volunteered Geographic Information (VGI) data of Germany was 27\% more than that of the commercially available proprietary sources such as TomTom and NavTeq. Among various cities in Germany, the city of Berlin had a very active community and the difference between maps of two consecutive days was comparable to the amount of changes expected in a high-defition map format. \\
 
 \section{Processing of the Output Data}
-Based on the OSM ID pairs and different map data according to the various periods, we simulated the navigation request and map update calculation. From our Python code, we generated CSV files with the evaluation parameters (Section \ref{evaluationParameters}). We analyzed our results and have discussed the results in the next section.  
+Based on the OSM ID pairs and different map data according to the various periods, we simulated the navigation request and map update calculation. From our Python code, we generated CSV files with the evaluation parameters (Section \ref{evaluationParameters}). A sample excerpt of generated data can be seen in Table \ref{exampledata}. We analyzed our results and have discussed the results in the next section.  
 
 \section{Evaluation Results}
 
@@ -871,7 +871,7 @@ Based on the OSM ID pairs and different map data according to the various period
 %\end{landscape}
 %\subsection{Grid/Map Tiles based Approach}
 As stated earlier in this chapter, we used our Dynamic Map Update Protocol in comparison to the simple map update protocol proposed by \citet{bastiaensen2003actmap} to evaluate its effectiveness. We now present our results and discuss their significance.
-\subsection{Scenario of Berlin}
+\subsection{Berlin}
 
 
 Our evaluation of map data of the city of Berlin showed that our approach can result in a significant amount of savings in terms of data transmission of map updates. The results from different scenarios, discuss our approach's savings of data in terms of map tiles/grids and also in terms of actual map objects. 
@@ -945,7 +945,39 @@ We previously stated that snapshots were taken after every 10 requests while eva
 Similarly, Figure \ref{fg:ber15d100} plots the amount of map updates provided after every 10 trip requests for 15-days differences. Similar to earlier observations, we can notice that our approach is relatively linear in terms of providing map update objects to the autonomous car based on the trip requests. After 20 trip requests, the simple update approach provided 84\% of the total map update objects. However, our approach results in significant savings as only 54551 map objects are provided out of total 71859 after first 20 trip request. That amounts to only 59\% of the total map update objects in our approach. We already discussed that the actual savings will be more as our evaluation scenario considers 100 trips per autonomous car. This would mean that on an average each trip has to last only 14 minutes and 24 seconds for continuous 24 hours. This is an extreme situation considering the length of each trip as described in Section \ref{evaluationParameters}.  \\
 
 
-To consider a more reasonable amount of trip requests, we evaluated our approach against the third scenario (Section \ref{10trips}) involving 10 continuous trips for 1000 autonomous cars in the city of Berlin. We evaluated this scenario with the same time differences of 30 such 1-day differences and 16 of our 15-days differences in the database. Figure \ref{fg:ber10x1000mo} compares the savings in terms of map objects for the aforementioned period. For 1-day differences between the car's and the server's map data, we see an average of 16681 map objects required in our approach in comparison to 48810 by the simple update approach. That accounts for approximately 77\% reduction in the amount of map objects required. Similarly, for the 15-days differences, on average, we required 473742 map objects in our approach. The simple approach required 676129 map objects on an average. Thus, the savings for 15-days differences is approximately 30\%. Due to the relatively large time difference between the map versions of the car and the server, the amount of savings is reduced. However, its significance is shown by the t-test.  
+To ensure the statistical significance of the achieved means we further conducted a paired t-test on the test results. The obtained p-values for the different amount of requests are presented in Table \ref{tablettest} and indicate clearly that we can reject the null hypotheses $H_{0}$: "The two approaches provide the same overhead in terms of update data."
+\begin{equation}
+H_0: \mu_{dynamicMap} = \mu_{simple}
+\end{equation} 
+Thus we accept the alternative hypothesis  $H_1$: "The Dynamic Map Update Protocol transmits less data than the simple map update approach." 
+\begin{equation}
+H_1: \mu_{dynamicMap} < \mu_{simple}
+\end{equation}
+Where $\mu$ is the mean of the number of updated map objects.\\ 
+To conduct 100 trips in a temporal sequence would only leave around 15 minutes for each of the trips to be finished in average over an 8 hours working day. It is highly expected with reference to \cite{pasaoglu_driving_2012} that only some drivers will come close to this huge amount of requests. Therefore the behaviour of the Dynamic Map Protocol is beneficial too. It can be seen in both figures that the simple map update approach provides most of the overall map updates very early (e.g. after 20 requests for 1 day of difference). The Dynamic Map Update Protocol however shows a more steady increase in providing the necessary map updates. Therefore it saves even more data when not requesting a huge amount of daily navigation requests.\\
+
+
+\begin{table*}
+\caption{Obtained p-values of the paired t-test for the results of the second test.}
+\begin{scriptsize}
+\centering
+\begin{tabular}
+{p{1.5cm}p{1cm}p{1cm}p{1cm}p{1cm}p{1cm}p{1cm}p{1cm}p{1cm}p{1cm}p{1cm}}
+number of requests&	10  & 20  & 30  & 40 & 50 & 60 & 70 & 80 & 90 & 100 \\ 
+\hline 
+1 day time difference & 1.90e-06 & 1.46e-06 & 1.06e-06 & 2.69e-06 & 9.75e-07 & 5.40e-07 & 1.40e-06 & 1.42e-06 & 1.36e-06 & 1.40e-06 \\ 
+\hline 
+15 days time difference &	8.60e-09 & 3.96e-09& 1.36e-09 &7.14e-11& 1.39e-12 &1.69e-13 &3.43e-11 &2.12e-10 &4.14e-11 &8.03e-11 \\
+\end{tabular}
+\end{scriptsize}
+\label{tablettest}
+\end{table*}
+
+
+
+
+
+To consider a more reasonable amount of trip requests, we evaluated our approach against the third scenario (Section \ref{10trips}) involving 10 continuous trips for 1000 autonomous cars in the city of Berlin. This evaluation also shows that our evaluation is not affected by the chosen set of trips evaluated for the previous scenario (See Section \ref{scenario3}). We evaluated this scenario with the same time differences of 30 such 1-day differences and 16 of our 15-days differences in the database. Figure \ref{fg:ber10x1000mo} compares the savings in terms of map objects for the aforementioned period. For 1-day differences between the car's and the server's map data, we see an average of 16681 map objects required in our approach in comparison to 48810 by the simple update approach. That accounts for approximately 77\% reduction in the amount of map objects required. Similarly, for the 15-days differences, on average, we required 473742 map objects in our approach. The simple approach required 676129 map objects on an average. Thus, the savings for 15-days differences is approximately 30\%. Due to the relatively large time difference between the map versions of the car and the server, the amount of savings is reduced. 
 
 \begin{figure}
 \centering
