@@ -183,6 +183,7 @@ Similar to a Geographic Coordinate System, grid references can also be used to d
 
 Figure \ref{fg:appgrid} shows an example of such grids. The mobile application \cite{androidapp} is using a grid reference of a rectangle with sides of size 1$^{\circ}$ latitude and 1$^{\circ}$ longitude. For example, the grid marked with 'n52e004' refers to the region between the latitudes +51$^{\circ}$ and +52$^{\circ}$ and the longitudes between +3$^{\circ}$ and +4$^{\circ}$. This grid size is not standard and a smaller grid size could be used by an app. Grid references are used in almost all digital mapping solutions for rendering. However, to optimize the process, such apps use hierarchical grid references with varying size. As one user zooms out, a larger size grid is used to render the map. As you zoom in to the map, multiple smaller sized grid references are used to render high quality details of the map. This technique has been employed since 1980s for digital maps.
 \begin{figure}
+\centering 
 \includegraphics[scale=.15]{appgrids.jpeg}
 \includegraphics[scale=.25]{appgridsz.jpeg}
 \caption{Grid references in mobile app MapFactor GPS Navigation Maps $\cite{androidapp}$}
@@ -242,8 +243,9 @@ Navigation is one of the most popular mobile services. As discussed in Section \
 
 We now discuss \citet{min2008mobile}'s approach to a mobile spatial database for a navigation system. Since, a flash memory is being actively used in mobile devices, they developed a flash memory storage based spatial database management systems (DBMS). They named their software as Flash-aware Ubiquitous Navigation System or FUNs. They categorized data from different use-cases such as routing, rendering and points of interest(POI) into different table-spaces. A table-space corresponds to one file. Using this approach, the routing data could be separated from Point of Interest (POI) data. For example, the location of nearby restaurants is a case of Points of Interest data as only its location is stored. However, to navigate to a nearest restaurant, the location data can be provided as an input for routing function. This approach allows them to partially update POI table structure without affecting routing data in some cases. For example, addition of a new restaurant location in POI data should not affect the navigation on the routes nearby its location. They designed several components of this spatial database system to work independently but in coherence. The system offers SQL-like APIs for various navigation related functions including sound search and k-nearest neighbor search. The system also supports spatial relational operators, such as finding nearest map object to a location as outlined by \citet{lee1998perf}. \\
 \begin{figure}
-\includegraphics[scale=.25]{FUNsArchitecture.png}
-\caption{The System Architecture of FUNs, adopted from Min et al.$\cite{min2008mobile}, \textit{page 3}$}
+\centering
+\includegraphics[scale=.20]{FUNsArchitecture.png}
+\caption{The System Architecture of FUNs, adopted from Min et al.$\cite{min2008mobile}, \textit{page 3}$.}
 \label{fg:sysArchFun}
 \end{figure}
 
@@ -257,6 +259,7 @@ We discussed in our introduction (Chapter \ref{ch:introduction}) that many compa
 Now, we discuss briefly the design and contributions of the ActMAP project, however we would largely focus on their incremental update approaches. One of the important part of ActMAP specification is the ActMAP update exchange format. It is an XML-based format to exchange map updates between various proprietary formats. The specification was designed to support all of the proprietary map database formats supplied by consortium members. The map data is split into multiple layers based upon their different applications. By separating the map data into multiple layers, a partial data update was possible. Multiple different approaches to minimize the update data size were considered. One of them is updating only a specific monitored geographical region such as a state or a small country. By having a relatively smaller geographical region, the map data could be updated over a cellular connection. However, the version information of every map object inside a map database is required to be known. A version control is necessary to make sure that partial updates can be applied in a correct order to work properly. \\
 
 \begin{figure}
+\centering
 \includegraphics[scale=.13]{ActMapExchange.png}
 \caption{ActMAP Standard Intermediate Format, adopted from $\cite{flament2003actmap}, \textit{page 25}$}
 \label{fg:actmap}
@@ -276,7 +279,7 @@ Earlier in Section \ref{actmapprojectsection}, we discussed Differential Map Upd
 
 We now discuss \citet{asahara2008locally}'s work on Connection Maintained - Locally Differential Map Update (CM-LDMU). Their work imagines every map object to have a unique ID which could be referred by ID(\textit{m}). This ID could be used to retrieve other attributes of a particular map object. All the other map objects linked to a map object can be queried by using ref(\textit{m}) where \textit{m} is the map object. A map consists of a set of such map objects. For versioning, the first version of a map is referred by M$_{1}$. Map versions increase over time with an increment of 1 whenever the map object changes. If a map object \textit{m} has not changed, between two different versions of a map, \textit{m}$_{i}$ = \textit{m}$_{j}$. Using Differential Map-Update (DMU) method, the differences between two map versions was classified into three types: 
 \begin{enumerate}
-\item new map objects which are to be added in the newer version of the map
+\item new map objects which are to be added in the newer version of the map,
 \item old map objects which are to be deleted in newer version of the map, and 
 \item update map objects which already exist in both the old and new map.
 \end{enumerate}
@@ -310,7 +313,7 @@ For partially updating a mobile database, \citet{min2011system} have designed a 
 \section{Hitachi Automotive Systems}
 As discussed in Section \ref{cmldmu}, maintaining a map's consistency while partially updating it can lead to overhead. The general approach of updating map tile by tile is not very efficient. Members of Hitachi Automotive Systems, Ltd. \cite{hitachi} claim that the general approach of updating individual map tiles as proposed by Asahara et al. leads to unwanted "updating cascades". This means, if one map tile gets updated the neighboring map tiles also have to be updated to ensure the routing capability of the map. The cascades then lead to unnecessary control data traffic over the network for the exchange of further map updates. To solve this problem they propose a different map update approach. Instead of updating specific map tiles, the updates are provided through individual map update objects. They consist of all the changes that have to be applied to a certain, connected area of the map. Thus no individual updates of all the affected map tiles are necessary. The amount of data needed to store the update information is also reduced. \\
 
-Additionally, \citet{min2011system}'s work provides an insight into updating service which provides updates via three different services. Their work does not discuss consistency in general, however the \textit{Discovery Service} can be seen as a way to avoid consistency issues by checking the map updates available for a particular region. In the next section, we now discuss Navigation Data Standard (NDS) which has been designed from the ground up to allow map updates. We will also discuss the map update process for NDS.
+Additionally, \citet{min2011system}'s work provides an insight into updating service which provides updates via three different services. Their work does not discuss consistency in general, however the \textit{Discovery Service} can be seen as a way to avoid consistency issues by checking the map updates available for a particular region. We have covered this in Section \ref{maus}. In the next section, we now discuss Navigation Data Standard (NDS) which has been designed from the ground up to allow map updates. We will also discuss the map update process for NDS.
 
 
 
@@ -335,9 +338,10 @@ The standard allows the easy exchange of map data information between different 
 \subsection{How NDS Allows Updates}
 We discussed how NDS delivers a new common standard for navigation data and software. We now explain some of the general working principle of NDS in detail. To allow easy updates of a map database while maintaining fast file based access, NDS uses SQLite database file format. An NDS database would internally have many databases inside it. The federation allows NDS databases to support specialized features from different companies. It also supports flexible and consistent versioning concept. Thus NDS also supports incremental map updates. The inner structure of the smaller databases are always NDS compliant. The smaller databases could be further specified by their levels and so called building blocks. The building blocks in NDS refer to different functionalities supported by NDS \cite{ndsblocks}. For example, points of interest, routing information and traffic information. Figure \ref{fg:ndsblocks} shows an overview of how such blocks come into play in a navigation system. Such a system, helps further partial updating of components inside a navigation system via over-the-air updates.  \\
 \begin{figure}
+\centering
 \includegraphics[scale=.42, angle=90]{ndsblocks.png}
 \label{fg:ndsblocks}
-\caption{Overview of different NDS blocks, source NDS-Specification$\cite{ndsblocks}$}
+\caption{Overview of different NDS blocks, source NDS-Specification$\cite{ndsblocks}$.}
 \end{figure}
 
 
@@ -377,14 +381,14 @@ For an autonomous car, it is essential to know its destination. It can be a loca
 
 \begin{figure}
 \centering
-\includegraphics[scale=.1]{classification5.png}
-\caption{General working principle behind the classification of updates}
+\includegraphics[scale=.1]{classification6.png}
+\caption{General working principle behind the classification of updates.}
 \label{fg:classificationofmapupdate}
 \end{figure}
 
 With the help of an example, we now present our approach on classifying grid level updates as mandatory or optional. In Figure \ref{fg:classificationofmapupdate}, assume that the autonomous car starts at the location marked "Start" and has the destination marked as "Destination". The road network is divided into multiple layers from level 1..n, level 1 being most important roads such as national highways down to level n for residential streets (Section \ref{maus}). We have used different classification for such roads which has been explained in Section \ref{gridsizeclassification}. For simplicity, we are considering that all the roads shown in the figure are of one type only. The dark, bold lines indicate the route which exists locally stored in the navigation system of the car. The dotted lines represent the newly added roads in that area. However, these changes have not been delivered as updates to the autonomous car. The grids are marked A to C vertically and 1,2 and 3 horizontally. The grids could be referred as A1, A2 and A3 in first row \& A1, B1, C1 in first column and so on. Grids A1, A3, B1, C1, C2 and C3 have been updated at the server's end. However, this information is not yet available at the car's end. We would now discuss how our approach classifies some of these grids as mandatory or optional.
 \subsection{Mandatory Changes}
-In our example, based on the map information car has locally, it chooses the path going through grids B1, B2, B3 and C3 (marked in red) to arrive at the destination. However, based on the updated information at the map server's end, it calculates the optimum path using grids B1, B2, C2 and C3 (marked in green). Using the routing information and seeing the changes we have on the map, only the updated information in grids C2 and C3 is necessary for the autonomous car to arrive at the destination using the optimum path. 
+In our example, based on the map information car has locally, it chooses the path going through grids B1, B2, B3 and C3 (marked in red) to arrive at the destination. However, based on the updated information at the map server's end, it calculates the optimum path using grids B1, B2, C2 and C3 (marked in green). Using the routing information and seeing the changes we have on the map, only the updated information in grids C2 and C3 is necessary for the autonomous car to arrive at the destination using the optimal path calculated by the server based on current state of map data. 
 \subsection{Optional Changes}
 Unlike the grids C2 and C3, the changes in other grids do not necessarily affect the optimal routing to reach destination. The changes in grid A1, A3, B1 and C1, even if they are downloaded and applied in the car's navigation system along with map updates of grids C2 and C3, does not affect the optimal route calculation to destination. The downloading of map updates for other grids, which indicate changes (A1, A3, B1 and C1) could be deferred. 
 \subsubsection{Deferring Optional Updates}
@@ -425,7 +429,7 @@ These classes are read from OpenStreetMap data which has been explained in Secti
 \begin{figure}
 \centering
 \includegraphics[scale=.65]{berlincity.png}
-\caption{Division of streets of Berlin city center into two classes, highway marked by thick lines and city roads by thin lines, {\copyright} OpenStreetMap contributors }
+\caption{Division of streets of Berlin city center into two classes, highway marked by thick lines and city roads by thin lines, {\copyright} OpenStreetMap contributors. }
 \label{fg:diffroads}
 \end{figure}  
 
@@ -435,7 +439,7 @@ These classes are read from OpenStreetMap data which has been explained in Secti
 \begin{figure}
 %\centering
 \includegraphics[scale=.65]{geohash2.png}
-\caption{Size of a city road layer grid (marked in bold) in comparison to a highway grid in Berlin city, {\copyright} OpenStreetMap contributors}
+\caption{Size of a city road layer grid (marked in bold) in comparison to a highway grid in Berlin city, {\copyright} OpenStreetMap contributors.}
 \label{fg:geohash}
 \end{figure}
 As discussed in Section \ref{gridsizeclassification}, dividing a map into specific grids is an important step for minimizing the update size for the map. However, we required a universal grid identifier system using which we impose different grid sizes suiting to our needs. That is where Geohashes come into picture. For the identification of a specific map tile, we use the indexing structure provided by the concept of Geohashes (\citet{suwardi2015geohash}). A Geohash is a unique string that identifies a certain geographic area on the Globus. Each Geohash identifies its personal rectangular bounding box. Neighbouring geographic areas just differ in the last letter of the Geohash. By adding up further letters to the end of the Geohash the area of the bounding box is shrunk accordingly. Geohashes therefore are a well suited indexing structure to satisfy the needs of the Dynamic Map Update Protocol. For the evaluation of the scenario of the city of Berlin in Chapter \ref{ch:evaluation}, we chose the Geohash string length of four letters for our highway street layer and five for the city street layer. These string lengths match on bounding box sizes of 39.1km x 19.5km and 4.89km x 4.89km, as can be seen in Figure \ref{fg:geohash}. The general concept of different map layers can be enhanced further by adding up more fine granular layers if beneficial for future use cases of the Dynamic Map Update Protocol. \\
@@ -449,7 +453,7 @@ Building upon our concept of identifying mandatory grid updates (see Section \re
 \begin{figure}
 \centering
 \includegraphics[scale=.32]{dmup.png}
-\caption{The map exchange protocol sequence}
+\caption{The Dynamic Map Update Protocol sequence.}
 \label{fg:protocol}
 \end{figure}
 
@@ -465,9 +469,9 @@ We now look at each step of the protocol illustrated in Figure \ref{fg:protocol}
 
 \begin{figure}
 \centering
-\includegraphics[scale=.2]{gridnumbering.png}
+\includegraphics[scale=.17]{gridnumbering.png}
 \label{fg:numberingtiles}
-\caption{Sequencing method of used map tiles/grids}
+\caption{Sequencing method of used map tiles/grids.}
 \end{figure}
 
 
@@ -623,8 +627,9 @@ These changes required to parse and process version \& time-stamp information. T
 Through the use of pgRouting and PostGIS extensions in PostgreSQL, we created a spatial database to support routing queries over the map data. We used osm2pgrouting to read the map data present in respective .osm files and to process and write it into the database. Upon successful completion, the map data is loaded in the spatial database which we created earlier. The schema of the whole database is shown in Figure \ref{fg:db}. After processing the map data, only a selected portion of the information provided in the osm file is stored in these 9 tables. The tables \textit{osm{\_}relations} and \textit{spatial{\_}ref{\_}sys} are not relevant to this thesis work. We now explain the use of the different tables and the structural modifications which had to be applied to some of them in the progress of the thesis.
 
 \begin{figure}
+\centering
 \includegraphics[scale=.2]{pgrouting.png}
-\caption{The complete database schema of pgRouting database}
+\caption{The complete database schema of pgRouting database.}
 \label{fg:db}
 \end{figure}
 
@@ -633,24 +638,27 @@ Through the use of pgRouting and PostGIS extensions in PostgreSQL, we created a 
 \subsection{Table: osm{\_}nodes}
 In Section \ref{osmosis} we covered how we used \textit{Osmosis} tool to decompress \textit{pbf} files to generate XML based \textit{osm} files for futher processing. With the help of a modified version of \textit{osm2pgrouting} tool, we processed the map data stored in \textit{osm} file and import it in our spatial database running over PostgreSQL database (see Section \ref{postgres}). The \textit{osm2pgrouting} tool processes the map information stored in the \textit{osm} file and stores it into a database format to support routing functions provided by pgRouting. After this processing, in the database a table named osm{\_}nodes is filled with information about all nodes read from the .osm file. The structure of the table is explained in Figure \ref{fg:osmnodes}. Due to our additional requirements ( see Section \ref{modifications} ), we introduced the new columns 'version', 'timestamp' and 'geohash' additionally in this table. The columns 'version' and 'timestamp' contain information about the version of the nodes in the table. And the 'geohash' column contains each node's corresponding geohash value. 
 \begin{figure}
+\centering
 \includegraphics[scale=.3]{osmnodes.png}
-\caption{Schema of table osm{\_}nodes}
+\caption{Schema of table osm{\_}nodes.}
 \label{fg:osmnodes}
 \end{figure}
 
 \subsection{Table: ways}
 OSM ways are one of the data primitives of OpenStreetMap data as described in Section \ref{osmxmlff}. The ways contain information about the paths on the map. All information regarding the ways is stored in the database table with the same name. The schema of the table \textit{ways} is shown in Figure \ref{fg:ways}. Each way is divided up into multiple segments which form the complete path. The efficient route calculation of segments is required to enable the graph analysis functions of pgRouting. This allows the efficient route calculation. The column 'osm{\_}id' refers to the unique identifier of each path, however a newly generate 'gid' is used as the primary key in this table. The column 'class{\_}id' refers to the class of the road, such as highway, residential etc. which were explained in Section \ref{osmxmlff}. Additionally, columns 'start{\_}geohash' and 'end{\_}geohash' have been added to speed up queries by \textit{geotagging}. The column 'start{\_}geohash' stores the geohash value (Section \ref{geohash}) of the starting point of the path and the column 'end{\_}geohash' stores the geohash value of the terminating point of the path segment. These geohash values are calculated based on the road type identified by the column 'class{\_}id'. Similarly to the table for nodes, additional columns for 'version' and 'timestamp' have been added for the requirements explained in Section \ref{modifications}. Additional information derived by calculations such as the distance between the start and the end point of a path and the cost of traveling on it, derived from the maximum speed allowed on the road is added in the table as well as the new columns. Restrictions such as one-way streets which affects routing calculations are also added in this table. It is the largest and most important table in the database, since it is read most frequently compared to all other tables to process the routing queries. Thus, to increase the performance of the overall procedure some of the information contained in it is duplicated in other smaller sized tables such as \textit{osm{\_}way{\_}classes}.   
 \begin{figure}
+\centering
 \includegraphics[scale=.35]{ways.png}
-\caption{Schema of table ways}
+\caption{Schema of table ways.}
 \label{fg:ways}
 \end{figure}
 
 \subsection{Table: ways{\_}vertices{\_}pgr}
 The table \textit{ways{\_}vertices{\_}pgr} is filled after processing data from each way present in the osm input file. The schema of the table is shown in Figure \ref{fg:waysverticespgr}. After filling table \textit{ways}, further processing is applied to load only vertices in the table \textit{ways{\_}vertices{\_}pgr}. One entry per osm{\_}id is loaded into the table \textit{ways{\_}vertices{\_}pgr} which represents each way object. Multiple entries per osm{\_}id are loaded into table \textit{ways} due to the splitting of ways into smaller segments for turn-by-turn navigation queries. Often, the intersection between two different ways is marked and identified as a vertex in this table. The vertices in this table represent different vertices in a connected graph which is the representation of the road network of an area. The vertices as the column 'id' values from this table are used for querying the shortest path between two locations. The corresponding location of the vertex for each entry is stored in the columns 'lon' and 'lat' of this table.
 \begin{figure}
+\centering
 \includegraphics[scale=.31]{waysverticespgr.png}
-\caption{Schema of table ways{\_}vertices{\_}pgr}
+\caption{Schema of table ways{\_}vertices{\_}pgr.}
 \label{fg:waysverticespgr}
 \end{figure}
 
@@ -668,8 +676,9 @@ Figure \ref{fg:osmwayclasses} shows the schema of the table osm{\_}way{\_}classe
 
 The column 'class{\_}id' stores a predefined value for different classes of roads according to the OSM specification (see Section \ref{tag}) are generated starting from the value of 101. These values are referenced in other tables such as \textit{ways} for determining the cost of each road segment in routing. Each class of a road segment has an associated value of legal limit of the speed. As explained earlier, a priority value is also associated with each class of roads in this table. However, the priority value is a modifiable component of pgRouting. Any modifications to the priority value can result in different routing results. Any modifications to this table, such as default{\_}maxspeed and priority can directly affect the routing results returned by pgRouting functions (Section \ref{pgrouting}) of the spatial database. It is possible to modify this table to suit some different routing requirements, however for our thesis, we did not do any modifications to this table.  
 \begin{figure}
+\centering
 \includegraphics[scale=.31]{osmwayclasses.png}
-\caption{Schema of table osm{\_}way{\_}classes}
+\caption{Schema of table osm{\_}way{\_}classes.}
 \label{fg:osmwayclasses}
 \end{figure}
 
@@ -699,7 +708,7 @@ In the previous section, we described all the necessary software tools we used d
 \begin{figure}
 \centering
 \includegraphics[scale=.6]{process.png}
-\caption{The Evaluation Process for our implementation}
+\caption{The Process for our implementation, includes processing of map data files into the database and evaluation procedure.}
 \label{fg:process}
 \end{figure}
 
@@ -793,6 +802,25 @@ We used a Virtual Box VM running with 1 CPU core and 1 GB of RAM as our geospati
 We discussed in Section \ref{methodofapproach} about how we have developed a Python based program to evaluate our approach by querying multiple databases from the map server instead of implementing a server-client based application. To test our approach, the Python based program ran on the same machine as our map server. 
 \section{Tools}
 We have described most of the tools used for our implementation in Section \ref{tools}. Additionally, we wrote bash script files to invoke python code for different scenarios and pass command-line arguments. We also used LibreOffice Calc, an open-source alternative to Microsoft Excel to analyze our CSV output files produced during the evaluation. 
+
+\begin{table*}
+\caption{A sample excerpt of the evaluation parameters obtained in the evaluation. Some additional parameters were also collected, but not shown in this example.}
+\begin{small}
+\centering
+\begin{tabular}
+{p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}}
+Execution Run&	Old Map Date & New Map Date & Dynamic Map Update Protocol Tile Updates & Simple Map Update Approach Tile Updates & Tile Savings in \% & Dynamic Map Update Protocol Objects with Changes & Simple Map Update Approach Objects with Changes & Object Savings in \% \\ 
+\hline 
+1&	1-8-2016&	2-8-16&	1,128&	7,413&		84.78\%&	30,427&	85,734&	64.51\% \\ 
+\hline 
+2&	2-8-2016&	3-8-16&	169&	3,252&		94.80\%&	597&	9,567&	93.76\% \\
+\hline
+ ... & ... & ... & ... & ... & ... & ... & ... & ... \\ 
+\end{tabular}
+\end{small}
+\label{exampledata}
+\end{table*}
+
 \section{Evaluation Parameters}\label{evaluationParameters}
 The setup required to evaluate our approach has been described earlier in Section \ref{setup}. To evaluate rigorously, we identified certain parameters to compare our approach with the simple map update approach. The identified parameters to extensively evaluate and compare our approach are listed as follows
 \begin{enumerate}
@@ -809,23 +837,7 @@ The setup required to evaluate our approach has been described earlier in Sectio
 
 As an example, a sample result of parameters collected can be seen in Table \ref{exampledata}.  
 
-\begin{table*}
-\caption{A sample excerpt of the evaluation parameters obtained in the evaluation. Some additional parameters were also collected, but not shown in this example}
-\begin{small}
-\centering
-\begin{tabular}
-{p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}}
-Execution Run&	Old Map Date & New Map Date & Dynamic Map Update Protocol Tile Updates & Simple Map Update Approach Tile Updates & Tile Savings in \% & Dynamic Map Update Protocol Objects with Changes & Simple Map Update Approach Objects with Changes & Object Savings in \% \\ 
-\hline 
-1&	1-8-2016&	2-8-16&	1,128&	7,413&		84.78\%&	30,427&	85,734&	64.51\% \\ 
-\hline 
-2&	2-8-2016&	3-8-16&	169&	3,252&		94.80\%&	597&	9,567&	93.76\% \\
-\hline
- ... & ... & ... & ... & ... & ... & ... & ... & ... \\ 
-\end{tabular}
-\end{small}
-\label{exampledata}
-\end{table*}
+
 
 
 
@@ -888,7 +900,7 @@ It can be seen in Figure \ref{fg:scenario1} that the amount of map tiles which t
 \begin{figure}
 \centering
 \includegraphics[scale=.6]{Graph1L.pdf}
-\caption{Graph showing the total number of map tiles with updates and the mandatory grid's percentage in them for required route calculation over 10,000 individual trips over different time-differences ranging from 2 year to 1 day. For time difference, dates used in comparison with 31-Aug-2016 are as follows 1. 2 Year (1-Jan-2014) 2. 1 Year (1-Jan-2015) 3. 45 Days (16-Jul-2016) 4. 30 Days (1-Aug-2016) 5. 15 Days (16-Aug-2016) and 6. 1 Day (30-Aug-2016)}
+\caption{Graph showing the total number of map tiles with updates and the mandatory map tiles identified by the Dynamic Map Update Protocol, required for the route calculation over 10,000 individual trips over different time-differences ranging from 2 year to 1 day. For time differences, dates used in comparison with 31-Aug-2016 are as follows 1. 2 Year (1-Jan-2014) 2. 1 Year (1-Jan-2015) 3. 45 Days (16-Jul-2016) 4. 30 Days (1-Aug-2016) 5. 15 Days (16-Aug-2016) and 6. 1 Day (30-Aug-2016)}
 \label{fg:scenario1}
 \end{figure}
 
@@ -896,8 +908,8 @@ It can be seen in Figure \ref{fg:scenario1} that the amount of map tiles which t
 \begin{figure}
 \centering
 %\includegraphics[scale=.25]{scenario1tiles.png}
-\includegraphics[scale=.7]{MapTiles1dvs15DP.pdf}
-\caption{Graph showing the total number of map tiles with updates and total number of mandatory map tiles identified for the server to send update in Scenario 1 for 1-day differences and 15-days differences}
+\includegraphics[scale=.6]{MapTiles1dvs15DP.pdf}
+\caption{Number of map tiles with updates and total number of mandatory map tiles identified for the server to send update in Scenario 1 for 1-day differences and 15-days differences}
 \label{fg:scenario11dv15d}
 \end{figure}
 
@@ -916,9 +928,9 @@ For the 15-days differences evaluation, the amount of map tiles server had to pr
 Through evaluation of savings at the server's end, we showed the effectiveness of our approach to save data from being processed and transmitted to the clients on the server side. However, for our approach another important quality criteria is the savings on the autonomous car's side. The savings in terms of cellular data for an autonomous car are directly related to savings in terms of money. The processing costs required on client side are negligible in comparison to cellular data costs. For this, we evaluated our approach for Scenario 2 as described earlier in Section \ref{scenario3}. The evaluation consists of an autonomous car completing 100 connected trips throughout the city while requesting map updates for each trip. The connected trips here mean that the car will start their \textit{n+1}th journey from their previous (\textit{n}th) trips's destination. While doing so, it is expected that the autonomous car will travel along some of the same streets covered in one of its previous trips or at least some of the map tiles it previously traveled through. Because of this, map updates from the previous requests are assumed to be applied at the local map database of the car while requesting an update for the next trip. In the previous scenario (Section \ref{evlscenario1}), all trips were independent of each other. However, in this evaluation the map updates from the previous requests are stored. Additionally after every 10 requests, a snapshot of provided map updates was taken to compare our approach with the simple map update approach. \\
 
 \begin{figure}
-\centering
-\includegraphics[scale=.6]{15DayDiffL.pdf}
-\caption{Graph showing the total number of map objects with changes vs total number of mandatory map objects required with 15-days differences, for 16 runs}
+%\centering
+\includegraphics[scale=.5]{15DayDiffL.pdf}
+\caption{Graph showing the total number of map objects with changes vs total number of mandatory map objects required with 15-days differences, for 16 runs over the month of August 2016.}
 \label{fg:16x15d}
 \end{figure}
 
@@ -927,8 +939,8 @@ Figure \ref{fg:16x15d} plots the difference between the number of map objects wh
 \begin{figure}
 \centering
 %\includegraphics[scale=.25]{1day100x100.png}
-\includegraphics[scale=.7]{Ttest1DayP.pdf}
-\caption{Graph showing the difference the between the average number of update objects for 100 consecutive requests by 100 different cars over 1-day difference between the local and server's map data}
+\includegraphics[scale=.6]{Ttest1DayP.pdf}
+\caption{Graph showing the difference the between the requested number of update objects for 100 consecutive requests, taken after 10 trips, by 100 different cars over 1-day difference between the local and server's map data.}
 \label{fg:ber1d100}
 \end{figure}
 
@@ -938,23 +950,23 @@ We previously stated that snapshots were taken after every 10 requests while eva
 \centering
 %\includegraphics[scale=.25]{15day100x100.png}
 \includegraphics[scale=.7]{TTest15DayP.pdf}
-\caption{Graph showing the difference between the average number of update objects for 100 consecutive requests by 100 different cars over 15-days differences between the local and server's map data }
+\caption{Graph showing the difference the between the requested number of update objects for 100 consecutive requests, taken after 10 trips, by 100 different cars over 15-days difference between the local and server's map data.}
 \label{fg:ber15d100}
 \end{figure}
 
 Similarly, Figure \ref{fg:ber15d100} plots the amount of map updates provided after every 10 trip requests for 15-days differences. Similar to earlier observations, we can notice that our approach is relatively linear in terms of providing map update objects to the autonomous car based on the trip requests. After 20 trip requests, the simple update approach provided 84\% of the total map update objects. However, our approach results in significant savings as only 54551 map objects are provided out of total 71859 after first 20 trip request. That amounts to only 59\% of the total map update objects in our approach. We already discussed that the actual savings will be more as our evaluation scenario considers 100 trips per autonomous car. This would mean that on an average each trip has to last only 14 minutes and 24 seconds for continuous 24 hours. This is an extreme situation considering the length of each trip as described in Section \ref{evaluationParameters}.  \\
 
 
-To ensure the statistical significance of the achieved means we further conducted a paired t-test on the test results. The obtained p-values for the different amount of requests are presented in Table \ref{tablettest} and indicate clearly that we can reject the null hypotheses $H_{0}$: "The two approaches provide the same overhead in terms of update data."
+As clear from the Figure \ref{fg:16x15d}, the amount of map updates varies according to various factors. Additionally, in Figure \ref{fg:ber15d100} and \ref{fg:ber1d100}, we can see some overlap between the amount of map objects provided by Simple Update Protocol and our Dynamic Map Updated Protocol. 
+To ensure the statistical significance of the achieved means in our results, we further conducted a paired t-test on the test results. The obtained p-values for the different amount of requests are presented in Table \ref{tablettest} and indicate clearly that we can reject the null hypotheses $H_{0}$: "The two approaches provide the same overhead in terms of update data."
 \begin{equation}
 H_0: \mu_{dynamicMap} = \mu_{simple}
 \end{equation} 
-Thus we accept the alternative hypothesis  $H_1$: "The Dynamic Map Update Protocol transmits less data than the simple map update approach." 
+There, we accept the alternative hypothesis  $H_1$: "The Dynamic Map Update Protocol transmits less data than the simple map update approach." 
 \begin{equation}
 H_1: \mu_{dynamicMap} < \mu_{simple}
 \end{equation}
 Where $\mu$ is the mean of the number of updated map objects.\\ 
-To conduct 100 trips in a temporal sequence would only leave around 15 minutes for each of the trips to be finished in average over an 8 hours working day. It is highly expected with reference to \cite{pasaoglu_driving_2012} that only some drivers will come close to this huge amount of requests. Therefore the behaviour of the Dynamic Map Protocol is beneficial too. It can be seen in both figures that the simple map update approach provides most of the overall map updates very early (e.g. after 20 requests for 1 day of difference). The Dynamic Map Update Protocol however shows a more steady increase in providing the necessary map updates. Therefore it saves even more data when not requesting a huge amount of daily navigation requests.\\
 
 
 \begin{table*}
@@ -977,7 +989,7 @@ number of requests&	10  & 20  & 30  & 40 & 50 & 60 & 70 & 80 & 90 & 100 \\
 
 
 
-To consider a more reasonable amount of trip requests, we evaluated our approach against the third scenario (Section \ref{10trips}) involving 10 continuous trips for 1000 autonomous cars in the city of Berlin. This evaluation also shows that our evaluation is not affected by the chosen set of trips evaluated for the previous scenario (See Section \ref{scenario3}). We evaluated this scenario with the same time differences of 30 such 1-day differences and 16 of our 15-days differences in the database. Figure \ref{fg:ber10x1000mo} compares the savings in terms of map objects for the aforementioned period. For 1-day differences between the car's and the server's map data, we see an average of 16681 map objects required in our approach in comparison to 48810 by the simple update approach. That accounts for approximately 77\% reduction in the amount of map objects required. Similarly, for the 15-days differences, on average, we required 473742 map objects in our approach. The simple approach required 676129 map objects on an average. Thus, the savings for 15-days differences is approximately 30\%. Due to the relatively large time difference between the map versions of the car and the server, the amount of savings is reduced. 
+The amount of trips we have choosen is quite high to identify saturation of our approach. Completing 100 trips in a day means on average 15 minutes for each of the trips which should be of length greater than 10 kilometers. It is highly expected with reference to \cite{pasaoglu_driving_2012} that only a few autonomous vehicles will come close to this huge amount of trip requests. Therefore, to consider a more reasonable amount of trip requests, we evaluated our approach against another scenario (see Section \ref{10trips}) involving 10 continuous trips for 1000 autonomous cars in the city of Berlin. This evaluation also shows that our evaluation is not affected by the chosen set of trips evaluated for the previous scenario (See Section \ref{scenario3}). We evaluated this scenario with the same time differences of 30 such 1-day differences and 16 of our 15-days differences in the database. Figure \ref{fg:ber10x1000mo} compares the savings in terms of map objects for the aforementioned period. For 1-day differences between the car's and the server's map data, we see an average of 16681 map objects required in our approach in comparison to 48810 by the simple update approach. That accounts for approximately 77\% reduction in the amount of map objects required. Similarly, for the 15-days differences, on average, we required 473742 map objects in our approach. The simple approach required 676129 map objects on an average. Thus, the savings for 15-days differences is approximately 30\%. Due to the relatively large time difference between the map versions of the car and the server, the amount of savings is reduced. 
 
 \begin{figure}
 \centering
