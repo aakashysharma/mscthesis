@@ -739,11 +739,14 @@ We aimed to compute most of the data required to compute update on the fly, it w
 
 
 \section{Finding Test Data}
-For Evaluation (see Chapter \ref{ch:evaluation}) of our approach, we needed to replicate different navigation requests. These navigation requests follow the protocol described in Section \ref{protocol}. In order to replicate real-life scenarios, we collected multiple pairs of OSM IDs which exist in all of our different versions of maps. These OSM ID pairs formed the base for our test-trips to evaluate our protocol over the same region. The use of these fixed set of test trips allowed us to imitate real-life scenarios where map conditions may change over a period of time. Additionally, to be more realistic, we wanted the composition of such OSM ID pairs to follow certain rules which are explained in Section \ref{evaluationParameters}. 
+For Evaluation (see Chapter \ref{ch:evaluation}) of our approach, we needed to replicate different navigation requests. These navigation requests follow the protocol described in Section \ref{protocol}. In order to replicate real-life scenarios, we collected multiple pairs of OSM IDs, which exist in all of our different versions of maps. These OSM ID pairs formed the base for our test-trips to evaluate our protocol over the same region. The use of these fixed set of test trips allowed us to imitate real-life scenarios where map conditions may change over a period of time. Having fixed set of OSM ID pairs guarantees that the same start and end location for the trip are maintained between different versions of the map data of a region. Additionally, to be more realistic, we wanted the composition of such OSM ID pairs to follow certain rules which are explained in Section \ref{evaluationParameters}.  
 \subsection{Finding OSM ID Pairs} \label{finding}
 To follow the composition guidelines described previously, we needed to generate OSM ID pairs before setting up evaluation. The OSM ID used here refers to the OSM ID of ways. It requires finding a random set of pairs and calculating the distance between them by using the Dijkstra functions available in pgRouting (see Section \ref{pgrouting}). Based on the distance, they were then classified into the different composition categories. Using these OSM ID pairs, we evaluated which map updates would be required in our approach. We evaluated our approach with comparison to a simple map update protocol. The Simple Map Update Protocol provided by \citet{bastiaensen2003actmap} provides updates to the calculated route for the car. Both approaches are applied to the same set of map data for the same set of test-trips in our evaluation.  
-\section{Mandatory Grid based Approach} \label{methodofapproach}
-Using our approach explained in Chapter \ref{ch:approach}, we devised a Python-based program to evaluate the capabilities of the Dynamic Map Update protocol. The program module was designed to query on spatial databases referring to the different versions of the map data on different dates. Upon reading the different trip requests identified by the OSM ID pairs, the program queried, different map versions according to the evaluation parameters. The obtained results of the queries are then further processed accordinglty to the protocol (Section \ref{protocol}). The program then compared and evaluated the total map tiles/grids affected by the (old) route calculated by car and the (new) route calculated by the server. Upon comparison, three different categories of changes in terms of map objects from the routes are calculated as specified in Section \ref{calcmu}. These changes are considered crucial to be delivered to the autonomous car. However, only delivering these map objects as the update to the car's map data could result in inconsistencies as discussed in \citet{asahara2008locally}'s work earlier in Section \ref{cmldmu}. Hence, based on these crucial changes, their map tiles/grids are marked as 'mandatory grids' for the trip request. From the list of map tiles/grids used by the car's route and the server's route, all the map tiles/grids which have changed between the two versions are identified. Upon eliminating the mandatory grids from the total list of map tiles/grids, the 'optional grids' are identified. For evaluation purposes, the number of map objects which are updated in the new version of the map data are also counted for mandatory, optional and total grids.
+\section{Method} \label{methodofapproach}
+After finding the necessary amount of OSM ID pairs for a region, we evaluated our approach. This is explained in detail in the next chapter. Using our approach explained in Chapter \ref{ch:approach}, we devised a Python-based program to evaluate the capabilities of the Dynamic Map Update Protocol. The program module was designed to query on spatial databases referring to the different versions of the map data on different dates. Upon reading the different trip requests identified by the OSM ID pairs, the program queries, different map versions according to the evaluation parameters. There parameters define the map versions which are to be compared. The obtained results of the queries are then further processed according to the protocol (Section \ref{protocol}). The program then compares and evaluates the total map tiles/grids affected by the (old) route calculated by car and the (new) route calculated by the server. Upon comparison, three different categories of changes in terms of map objects from the routes are calculated as specified in Section \ref{calcmu}. These changes are considered crucial to be delivered to the autonomous car. However, only delivering these map objects as the update to the car's map data could result in inconsistencies as discussed in \citet{asahara2008locally}'s work earlier in Section \ref{cmldmu}. Hence, based on these crucial changes, their map tiles/grids are marked as 'mandatory grids' for the requested trip. From the list of map tiles/grids used by the car's route and the server's route, all the map tiles/grids which have changed between the two versions are also identified. Upon eliminating the mandatory grids from the total list of map tiles/grids, the 'optional grids' are identified. For evaluation purposes, the number of map objects which are updated in the new version of the map data are also counted for mandatory, optional and total grids. \\
+
+
+In this chapter, we discussed different tools and sources of map data used in our evaluation (see Chapter \ref{ch:evaluation}). The implementation allows us to replicate the navigation services of a navigation system. The processing of the map data has been covered in detail in Section \ref{process}. In next chapter, we look at using this implementation to evaluate a comparison between our Dynamic Map Update Protocol to \citet{bastiaensen2003actmap}'s approach. We also discuss our evaluation parameters and the findings in the evaluation.
 
 
 
@@ -755,7 +758,7 @@ For each scenario a specific set of random test trips has been generated (see Se
 
 
 \section{Evaluation Scenarios}
-We devised different scenarios with the goal of evaluating our approach in different circumstances. We now describe each one of them in detail and the reason behind it. Therefore, we also cover the significance of each scenario.
+To evaluate extensively, we devised different scenarios with the goal of evaluating our approach in different circumstances. We do not limit our evaluation from one perspective, however by using multiple scenarios we show the capabilities and the benefits of our Dynamic Map Update Protocol in different use-cases. We now describe each one of them in detail and the reason behind it. Additionally, we also cover the significance of each scenario.
 \subsection{Scenario 1: Server-side Savings} \label{evlscenario1}
 With Scenario 1, we attempt to evaluate the effectiveness in saving regarding savings on server side in terms of computation time and overall saved bandwidth. To achieve this, we use 10,000 random navigation requests by different cars sent to the server. These requests follow the composition structure which we discussed earlier. 20\% of these trips have the driving distance of more than 30 kilometers. Another 20\% of these trips are less than 10 kilometers long. The remaining 40\% of the trips, are based on \citet{pasaoglu2012driving}'s report and are between 10 and 30 kilometers. This scenario simulates a situation where 10,000 cars in a city or region request map updates for their different trips. Based on the route information and car's map data, the server will generate the required map update. Since, all the cars are different, a map update from one navigation request does not affect the map update request of another car.  
 \subsubsection{Significance}
@@ -764,7 +767,7 @@ This scenario effectively simulates the situation in a small city. Although, the
 \subsection{Scenario 2: Client-side Savings} \label{10trips}
 In Scenario 1, we covered the savings from the server's perspective. With Scenario 1, we show that if there are multiple navigation requests coming in, it could save the data it has to send as reply to individual cars. To show that our results were not affected by our set of specific trip requests, we devised this scenario to evaluate our protocol's effectiveness. In this scenario, instead of considering the savings on the server's end where all the requests come in, we consider map update requests sent to the server from a car. Instead of an exhaustive set of 100 trips per car (see Section \ref{scenario3}), we only consider 10 such trips per car. The difference here is that, the updates from a previous request are considered to be already delivered. So, if the car passes through the same grid, which it got updates for earlier, it does not need to request the updates anymore for the same specific grid.   
 
-This scenario is similar to the scenario 3 with just two simple changes. Subsequently, to scale this scenario, we consider 1000 such cars, traveling throughout the city and requesting map updates. Again, similar to previous scenario, no two cars request the same trip or even the reverse of any trip.\\
+This scenario is similar to the Scenario 3 (Section \ref{scenario3}) with just two simple changes. Subsequently, to scale this scenario, we consider 1000 such cars, traveling throughout the city and requesting map updates. Again, similar to previous scenario, no two cars request the same trip or even the reverse of any trip.\\
 
 \subsubsection{Significance}
 By evaluating this scenario, we aim to find savings for individual cars in terms of bandwidth. We compare their savings with the always updated scenario in which they receive updates for grids which have been changed. Consequently, this scenario covers individual savings, but also it will average out the savings users have in a city. We understand that some areas can have much frequent changes than the other. 
@@ -776,11 +779,7 @@ We devised evaluation scenarios to showcase savings at map server's and client's
 We imagined an autonomous car, traveling through different parts of a city/region based on summons by humans. An autonomous car starts from a point X and has a destination point Y. A request to point Z arrives, and car proceeds towards point Z after dropping off passengers at the point Y. In such case, the trips will be always connected. This would differ from earlier scenario as it is more likely that the car would request lesser updates since it already requested map areas which have to be used for the further trips. For the scenario, we set the number of consecutive trips for each car to be 100. This translates into an average trip length of 14 minutes and 20 seconds, if the car has been driving continuously for 24 hours. To verify the significance, we simulate 100 such autonomous cars requesting map updates for their 100 consecutive trips. Based on the start and end location, we have ensured that no two cars will request the same trip or even reverse trips. 
 
 \subsubsection{Significance}
-This scenario is significant to represent a situation arising from autonomous cars in future. An autonomous car has to always rely on an up-to-date map for its navigation depend on update map for its navigation. By evaluating such scenario, we aim to answer questions regarding the impact of our approach on autonomous vehicles. The connected scenario of trips is more analogous to that of an autonomous car. Using 100 such autonomous cars provides enough coverage throughout the region. By keeping each trip unique, the probability of driving in a region with newly added changes increases. 
-
-
-
-
+This scenario imitates the behavior of an autonomous car being used a taxi to transport people from one place to another. It is significant to represent a situation arising from autonomous cars in future. An autonomous car has to always rely on an up-to-date map for its navigation depend on update map for its navigation. By evaluating such scenario, we aim to answer questions regarding the impact of our approach on autonomous vehicles. The connected scenario of trips is more analogous to that of an autonomous car. Using 100 such autonomous cars provides enough coverage throughout the region. By keeping each trip unique, the probability of driving in a region with newly added changes increases. 
 
 
 
@@ -806,6 +805,28 @@ The setup required to evaluate our approach has been described earlier in Sectio
 \item Total number of changed map objects in total grids which have changed between two versions
 \item Time required to compute these calculations
 \end{enumerate}
+
+
+As an example, a sample result of parameters collected can be seen in Table \ref{table1}. 
+
+\begin{table*}
+\caption{A sample excerpt of the test results, some additional performance parameters were also collected but not shown}
+\begin{small}
+\centering
+\begin{tabular}
+{p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}}
+Execution Run&	Old Map Date & New Map Date & Dynamic Map Update Protocol Tile Updates & Simple Map Update Approach Tile Updates & Tile Savings in \% & Dynamic Map Update Protocol Objects with Changes & Simple Map Update Approach Objects with Changes & Object Savings in \% \\ 
+\hline 
+1&	1-8-2016&	2-8-16&	1,128&	7,413&		84.78\%&	30,427&	85,734&	64.51\% \\ 
+\hline 
+2&	2-8-2016&	3-8-16&	169&	3,252&		94.80\%&	597&	9,567&	93.76\% \\
+\hline
+ ... & ... & ... & ... & ... & ... & ... & ... & ... \\ 
+\end{tabular}
+\end{small}
+\label{table1}
+\end{table*}
+
 
 
 \section{Evaluation Period} \label{timedifference}
