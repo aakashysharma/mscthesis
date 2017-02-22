@@ -244,7 +244,7 @@ Navigation is one of the most popular mobile services. As discussed in Section \
 We now discuss \citet{min2008mobile}'s approach to a mobile spatial database for a navigation system. Since, a flash memory is being actively used in mobile devices, they developed a flash memory storage based spatial database management systems (DBMS). They named their software as Flash-aware Ubiquitous Navigation System or FUNs. They categorized data from different use-cases such as routing, rendering and points of interest(POI) into different table-spaces. A table-space corresponds to one file. Using this approach, the routing data could be separated from Point of Interest (POI) data. For example, the location of nearby restaurants is a case of Points of Interest data as only its location is stored. However, to navigate to a nearest restaurant, the location data can be provided as an input for routing function. This approach allows them to partially update POI table structure without affecting routing data in some cases. For example, addition of a new restaurant location in POI data should not affect the navigation on the routes nearby its location. They designed several components of this spatial database system to work independently but in coherence. The system offers SQL-like APIs for various navigation related functions including sound search and k-nearest neighbor search. The system also supports spatial relational operators, such as finding nearest map object to a location as outlined by \citet{lee1998perf}. \\
 \begin{figure}
 \centering
-\includegraphics[scale=.20]{FUNsArchitecture.png}
+\includegraphics[scale=.23]{FUNsArchitecture.png}
 \caption{The System Architecture of FUNs, adopted from Min et al.$\cite{min2008mobile}, \textit{page 3}$.}
 \label{fg:sysArchFun}
 \end{figure}
@@ -469,7 +469,7 @@ We now look at each step of the protocol illustrated in Figure \ref{fg:protocol}
 
 \begin{figure}
 \centering
-\includegraphics[scale=.17]{gridnumbering.png}
+\includegraphics[scale=.18]{gridnumbering.png}
 \label{fg:numberingtiles}
 \caption{Sequencing method of used map tiles/grids.}
 \end{figure}
@@ -695,6 +695,7 @@ The column 'class{\_}id' stores a predefined value for different classes of road
 \subsection{View: wayshashed}
 The protocol (Section \ref{protocol}) in our approach depends on the use of the segmentation of the used map into specific grids and their versioning to identify whether a particular grid has changed in the newer version of the map or not. There is no implicit grid based geotagging mechanism provided by pgRouting (Section \ref{pgrouting}). In our post-processing of the database (Section \ref{postprocessing}), we have used a Geohash (Section \ref{geohash}) based scheme to place a grid indexing structure on the existing map data. However, for our protocol, we required a way to identify different versions of a grid. To solve the problem of versioning of grids, we have used a view for storing grid related information to identify different versions of the grid. It is implicitly assumed that the map server will always have the most recent version of the map and the grids in it. The schema of the view \textit{wayshashed} is shown in Figure \ref{fg:wayshashed}. The column 'geohash' refers to each grid identified by its geohash. The most recent timestamp value in a grid is stored in the corresponding column 'recent' of the view \textit{wayshashed}. The count of all the objects in a particular grid is stored in column 'count' while the column 'version' stores the sum of version of each individual element present in the grid. Comparison based on the values of the columns 'recent', 'version' and 'count' is used to detect whether the elements of a particular grid have changed or not. Any such change in a grid of two different versions of a map will be detected by comparing these values from the view \textit{wayshashed}.
 \begin{figure}
+\centering
 \includegraphics[scale=.3]{wayshashed.png}
 \caption{Schema of view wayshashed}
 \label{fg:wayshashed}
@@ -803,23 +804,6 @@ We discussed in Section \ref{methodofapproach} about how we have developed a Pyt
 \section{Tools}
 We have described most of the tools used for our implementation in Section \ref{tools}. Additionally, we wrote bash script files to invoke python code for different scenarios and pass command-line arguments. We also used LibreOffice Calc, an open-source alternative to Microsoft Excel to analyze our CSV output files produced during the evaluation. 
 
-\begin{table*}
-\caption{A sample excerpt of the evaluation parameters obtained in the evaluation. Some additional parameters were also collected, but not shown in this example.}
-\begin{small}
-\centering
-\begin{tabular}
-{p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}}
-Execution Run&	Old Map Date & New Map Date & Dynamic Map Update Protocol Tile Updates & Simple Map Update Approach Tile Updates & Tile Savings in \% & Dynamic Map Update Protocol Objects with Changes & Simple Map Update Approach Objects with Changes & Object Savings in \% \\ 
-\hline 
-1&	1-8-2016&	2-8-16&	1,128&	7,413&		84.78\%&	30,427&	85,734&	64.51\% \\ 
-\hline 
-2&	2-8-2016&	3-8-16&	169&	3,252&		94.80\%&	597&	9,567&	93.76\% \\
-\hline
- ... & ... & ... & ... & ... & ... & ... & ... & ... \\ 
-\end{tabular}
-\end{small}
-\label{exampledata}
-\end{table*}
 
 \section{Evaluation Parameters}\label{evaluationParameters}
 The setup required to evaluate our approach has been described earlier in Section \ref{setup}. To evaluate rigorously, we identified certain parameters to compare our approach with the simple map update approach. The identified parameters to extensively evaluate and compare our approach are listed as follows
@@ -853,7 +837,28 @@ We have considered different time differences ranging from 2+ years to 1 day to 
 These are the differences between the server and client's version of the map data of the same region. The server is always presumed to have the latest information, the most recent map version which is the map data on date 31-08-2016. 
 \\
 
-OpenStreetMap (Section \ref{osm}) is a volunteered project. The contribution to the map data comes from volunteers who update the map. The amount of changes on a particular day depends on the changes reported by the volunteers. Since our evaluation only considered fixed dates, we wanted to evaluate our Dynamic Map Update Protocol over multiple similar time differences. Additionally, to show the statistical significance of our findings in 1 day differences where the changes were minimum, we evaluated our scenarios with 1-day differences over a 30 day period. For this, we considered the month of August 2016. We evaluated our approach between 01-Aug-2016 vs 02-Aug-2016, and then 02-Aug-2016 vs 03-Aug-2016 and so on. In addition to that, we used the same set of map data of the month of August 2016, to create 16 such periods with 15-days difference. 
+OpenStreetMap (Section \ref{osm}) is a volunteered geographic information project. The contribution to the map data comes from volunteers who update the map. The amount of changes on a particular day depends on the changes reported by the volunteers. Since our evaluation only considered fixed dates, we wanted to evaluate our Dynamic Map Update Protocol over multiple similar time differences. Additionally, to show the statistical significance of our findings in 1 day differences where the changes were minimum, we evaluated our scenarios with 1-day differences over a 30 day period. For this, we considered the month of August 2016. We evaluated our approach between 01-Aug-2016 vs 02-Aug-2016, and then 02-Aug-2016 vs 03-Aug-2016 and so on. In addition to that, we used the same set of map data of the month of August 2016, to create 16 such periods with 15-days difference. 
+
+
+\begin{table*}
+\caption{A sample excerpt of the evaluation parameters obtained in the evaluation. Some additional parameters were also collected, but not shown in this example.}
+\begin{small}
+\centering
+\begin{tabular}
+{p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}}
+Execution Run&	Old Map Date & New Map Date & Dynamic Map Update Protocol Tile Updates & Simple Map Update Approach Tile Updates & Tile Savings in \% & Dynamic Map Update Protocol Objects with Changes & Simple Map Update Approach Objects with Changes & Object Savings in \% \\ 
+\hline 
+1&	1-8-2016&	2-8-16&	1,128&	7,413&		84.78\%&	30,427&	85,734&	64.51\% \\ 
+\hline 
+2&	2-8-2016&	3-8-16&	169&	3,252&		94.80\%&	597&	9,567&	93.76\% \\
+\hline
+ ... & ... & ... & ... & ... & ... & ... & ... & ... \\ 
+\end{tabular}
+\end{small}
+\label{exampledata}
+\end{table*}
+
+
 \section{Geographic Location}
 As described earlier in Section \ref{whyosm} no high-definition map format is yet available with a long history of versions to evaluate our approach. Therefore, we are using OpenStreetMap (see Section \ref{osm}) to test our approach. To keep our evaluation comparable to that of a high-definition map with frequent changes, we researched for areas in the world with considerably higher map change activity. A study by \citet{neis2011street} showed that Volunteered Geographic Information (VGI) data of Germany was 27\% more than that of the commercially available proprietary sources such as TomTom and NavTeq. Among various cities in Germany, the city of Berlin had a very active community and the difference between maps of two consecutive days was comparable to the amount of changes expected in a high-defition map format. \\
 
@@ -899,7 +904,7 @@ It can be seen in Figure \ref{fg:scenario1} that the amount of map tiles which t
 
 \begin{figure}
 \centering
-\includegraphics[scale=.6]{Graph1L.pdf}
+\includegraphics[scale=.7]{Graph1L.pdf}
 \caption{Graph showing the total number of map tiles with updates and the mandatory map tiles identified by the Dynamic Map Update Protocol, required for the route calculation over 10,000 individual trips over different time-differences ranging from 2 year to 1 day. For time differences, dates used in comparison with 31-Aug-2016 are as follows 1. 2 Year (1-Jan-2014) 2. 1 Year (1-Jan-2015) 3. 45 Days (16-Jul-2016) 4. 30 Days (1-Aug-2016) 5. 15 Days (16-Aug-2016) and 6. 1 Day (30-Aug-2016)}
 \label{fg:scenario1}
 \end{figure}
@@ -908,7 +913,7 @@ It can be seen in Figure \ref{fg:scenario1} that the amount of map tiles which t
 \begin{figure}
 \centering
 %\includegraphics[scale=.25]{scenario1tiles.png}
-\includegraphics[scale=.6]{MapTiles1dvs15DP.pdf}
+\includegraphics[scale=.7]{MapTiles1dvs15DP.pdf}
 \caption{Number of map tiles with updates and total number of mandatory map tiles identified for the server to send update in Scenario 1 for 1-day differences and 15-days differences}
 \label{fg:scenario11dv15d}
 \end{figure}
@@ -929,7 +934,7 @@ Through evaluation of savings at the server's end, we showed the effectiveness o
 
 \begin{figure}
 %\centering
-\includegraphics[scale=.5]{15DayDiffL.pdf}
+\includegraphics[scale=.6]{15DayDiffL.pdf}
 \caption{Graph showing the total number of map objects with changes vs total number of mandatory map objects required with 15-days differences, for 16 runs over the month of August 2016.}
 \label{fg:16x15d}
 \end{figure}
@@ -939,7 +944,7 @@ Figure \ref{fg:16x15d} plots the difference between the number of map objects wh
 \begin{figure}
 \centering
 %\includegraphics[scale=.25]{1day100x100.png}
-\includegraphics[scale=.6]{Ttest1DayP.pdf}
+\includegraphics[scale=.1]{Ttest1DayP.pdf}
 \caption{Graph showing the difference the between the requested number of update objects for 100 consecutive requests, taken after 10 trips, by 100 different cars over 1-day difference between the local and server's map data.}
 \label{fg:ber1d100}
 \end{figure}
